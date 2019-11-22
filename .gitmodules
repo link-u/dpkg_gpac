@@ -1,0 +1,3 @@
+[submodule "gpac"]
+	path = gpac
+	url = git@github.com:gpac/gpac.git
