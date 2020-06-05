@@ -1,0 +1,13 @@
+name: 'Execute on bionic'
+description: 'execute a script on bionic'
+inputs:
+  script:
+    description: 'Relative path of script to execute'
+    required: true
+outputs: []
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  entrypoint: "/usr/bin/bash"
+  args:
+    - ${{ inputs.script }}
