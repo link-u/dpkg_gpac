@@ -1,0 +1,117 @@
+name: Build debian package on push or release-tags or pull request.
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - v*
+
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, ubuntu-20.04]
+        include:
+          - os: ubuntu-18.04
+            codename: bionic
+          - os: ubuntu-20.04
+            codename: focal
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Checkout submodules
+        shell: bash
+        run: |
+          sed -i -e 's/git\@github\.com\:/https\:\/\/github.com\//g' .gitmodules
+          git submodule init
+          git submodule sync --recursive
+          git submodule update
+          git submodule foreach bash -c "sed -i -e 's/git\@github\.com\:/https\:\/\/github.com\//g' .gitmodules || true"
+          git submodule foreach git submodule sync --recursive
+          git submodule foreach git submodule init
+          git submodule foreach git submodule update --init --force --recursive
+
+      - name: Install debhelper dh-make, and dependent packages
+        shell: bash
+        run: |
+          suto apt install -y --no-install-recommends debhelper
+          sudo mk-build-deps gpac/debian/control
+
+      - name: Build debian package
+        shell: bash
+        id: build
+        run: |
+          cp "scripts/changelog_template" "gpac/debian/changelog"
+          # replace date
+          sed -i -r "s/%DATE%/$(LC_ALL=C TZ=JST-9 date '+%a, %d %b %Y %H:%M:%S %z')/g" gpac/debian/changelog
+
+          # set debian package version
+          version=$(git -C gpac describe --tags | sed 's/\(.*\)-.*/\1/')
+          dpkg_version=${version:1}$(TZ=JST-9 date +%Y%m%d)+${{ matrix.codename }}
+          echo "::set-output name=version::${dpkg_version}"
+
+          bash scripts/build.sh
+
+      - name: Get debian package name
+        shell: bash
+        run: |
+          echo "::set-output name=filename::$(basename $(find gpac/ -type f -name \*.deb))"
+        id: get_deb_name
+
+      - name: Upload result
+        uses: actions/upload-artifact@v1
+        with:
+          name: ${{ matrix.codename }}
+          path: gpac/${{ steps.get_deb_name.outputs.filename }}
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: true
+          prerelease: true
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+
+  upload:
+    needs: release
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        codename: [bionic, focal]
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{ matrix.codename }}
+          path: "."
+      - name: Get debian package name
+        shell: bash
+        run: |
+          echo "::set-output name=filename::$(find . -type f -name \*.deb)"
+        id: get_deb_name
+      - name: Upload release asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: ${{ steps.get_deb_name.outputs.filename }}
+          asset_name: ${{ steps.get_deb_name.outputs.filename }}
+          asset_content_type: application/vnd.debian.binary-package
