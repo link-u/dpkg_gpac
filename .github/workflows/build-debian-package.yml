@@ -98,8 +98,7 @@ jobs:
           path: artifact
       - name: Get debian package name
         shell: bash
-        run: |
-          echo "::set-output name=filename::$(find artifact/ -type f -name \*.deb)"
+        run: echo "::set-output name=filename::$(basename $(find artifact/ -type f -name \*.deb))"
         id: get_deb_name
       - name: Upload release asset
         id: upload-release-asset
