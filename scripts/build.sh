@@ -1,3 +1,3 @@
 #! /bin/bash
 
-env --chdir=./gpac make deb
+env --chdir=../gpac make deb

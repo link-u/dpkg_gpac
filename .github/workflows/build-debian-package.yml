@@ -41,7 +41,9 @@ jobs:
         shell: bash
         run: |
           sudo apt install -y --no-install-recommends debhelper debmake equivs
-          sudo mk-build-deps --install gpac/debian/control
+          sudo mk-build-deps --install \
+                             --tool='apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes' \
+                             gpac/debian/control
 
       - name: Build debian package
         shell: bash
