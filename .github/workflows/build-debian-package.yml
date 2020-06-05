@@ -38,7 +38,7 @@ jobs:
           sed -i -r "s/X.Y.Z-alpha/${dpkg_version}/g" gpac/debian/changelog
 
       - name: Build debian package
-        uses: "./actions/${{ matrix.codename }}"
+        uses: "./actions/bionic"
         with:
           script: scripts/build.sh
 
