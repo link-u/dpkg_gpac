@@ -1,6 +1,6 @@
-#! /bin/bash -eu
+#! /bin/bash -eux
 
-set -eu
+set -eux
 
 SCRIPT_PATH=$(readlink -f $(cd $(dirname $0) && pwd))
 cd ${SCRIPT_PATH}
