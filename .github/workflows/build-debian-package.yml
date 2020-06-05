@@ -38,7 +38,8 @@ jobs:
 
       - name: Build debian package
         uses: "./actions/${{ matrix.codename }}"
-        run: scripts/build.sh
+        with:
+          script: scripts/build.sh
 
       - name: Upload result
         uses: actions/upload-artifact@v2
