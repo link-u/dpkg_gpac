@@ -52,7 +52,7 @@ jobs:
 
       - name: Build debian package
         shell: bash
-          bash scripts/build.sh
+        run: bash scripts/build.sh
 
       - name: Get debian package name
         shell: bash
