@@ -48,6 +48,7 @@ jobs:
           version=$(git -C gpac describe --tags | sed 's/\(.*\)-.*/\1/')
           dpkg_version=${version:1}$(TZ=JST-9 date +%Y%m%d)+${{ matrix.codename }}
           echo "::set-output name=version::${dpkg_version}"
+          sed -i -r "s/X.Y.Z-alpha/${dpkg_version}/g" gpac/debian/changelog
 
           bash scripts/build.sh
 
