@@ -39,7 +39,6 @@ jobs:
 
       - name: Build debian package
         shell: bash
-        id: build
         run: |
           cp "scripts/changelog_template" "gpac/debian/changelog"
           # replace date
@@ -51,6 +50,8 @@ jobs:
           echo "::set-output name=version::${dpkg_version}"
           sed -i -r "s/X.Y.Z-alpha/${dpkg_version}/g" gpac/debian/changelog
 
+      - name: Build debian package
+        shell: bash
           bash scripts/build.sh
 
       - name: Get debian package name
