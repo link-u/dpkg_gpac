@@ -4,11 +4,12 @@ set -eux
 
 SCRIPT_PATH=$(readlink -f $(cd $(dirname $0) && pwd))
 cd ${SCRIPT_PATH}
+cd ../gpac
 
-apt update
-mk-build-deps --install --remove \
-              --tool='apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes' \
-              gpac/debian/control
+env --chdir=../gpac \
+  mk-build-deps --install --remove \
+  --tool='apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes' \
+  debian/control
 
 env --chdir=../gpac fakeroot debian/rules clean
 env --chdir=../gpac fakeroot debian/rules configure
