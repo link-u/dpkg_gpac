@@ -46,7 +46,7 @@ jobs:
 
           # set debian package version
           version=$(git -C gpac describe --tags | sed 's/\(.*\)-.*/\1/')
-          dpkg_version=${version:1}$(TZ=JST-9 date +%Y%m%d)+${{ matrix.codename }}
+          dpkg_version=${version:1}.$(TZ=JST-9 date +%Y%m%d)+${{ matrix.codename }}
           echo "::set-output name=version::${dpkg_version}"
           sed -i -r "s/X.Y.Z-alpha/${dpkg_version}/g" gpac/debian/changelog
 
@@ -57,7 +57,7 @@ jobs:
       - name: Get debian package name
         shell: bash
         run: |
-          echo "::set-output name=filename::$(basename $(find gpac/ -type f -name \*.deb))"
+          echo "::set-output name=filename::$(basename $(find gpac/ -type f -name gpac\*.deb))"
         id: get_deb_name
 
       - name: Upload result
