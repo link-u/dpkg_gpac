@@ -40,7 +40,7 @@ jobs:
       - name: Install debhelper dh-make, and dependent packages
         shell: bash
         run: |
-          suto apt install -y --no-install-recommends debhelper
+          sudo apt install -y --no-install-recommends debhelper
           sudo mk-build-deps gpac/debian/control
 
       - name: Build debian package
