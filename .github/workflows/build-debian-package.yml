@@ -38,15 +38,16 @@ jobs:
           sed -i -r "s/X.Y.Z-alpha/${dpkg_version}/g" gpac/debian/changelog
 
       - name: Build debian package
+        if: ${{ matrix.codename  == 'bionic' }}
         uses: "./.github/actions/bionic"
         with:
           script: scripts/build.sh
-        if: "${{ matrix.codename }}" == "bionic"
+
       - name: Build debian package
+        if: ${{ matrix.codename  == 'focal' }}
         uses: "./.github/actions/focal"
         with:
           script: scripts/build.sh
-        if: "${{ matrix.codename }}" == "focal"
 
       - name: Upload result
         uses: actions/upload-artifact@v2
