@@ -1,4 +1,5 @@
 FROM ubuntu:bionic
 
-RUN apt update && \
-    apt install -y --no-install-recommends bash debhelper devscripts debmake equivs
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends bash debhelper devscripts debmake equivs && \
+    apt-get install -y --no-install-recommends git build-essential
