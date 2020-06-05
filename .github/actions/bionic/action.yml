@@ -10,4 +10,4 @@ runs:
   image: 'Dockerfile'
   entrypoint: "/usr/bin/bash"
   args:
-    - ${{ inputs.script }}
+    - "${{ inputs.script }}"

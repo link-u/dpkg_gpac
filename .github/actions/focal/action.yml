@@ -1,5 +1,5 @@
-name: 'Execute on bionic'
-description: 'execute a script on bionic'
+name: 'Execute on focal'
+description: 'execute a script on focal'
 inputs:
   script:
     description: 'Relative path of script to execute'
@@ -10,4 +10,4 @@ runs:
   image: 'Dockerfile'
   entrypoint: "/usr/bin/bash"
   args:
-    - ${{ inputs.script }}
+    - "${{ inputs.script }}"
