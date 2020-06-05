@@ -33,7 +33,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y --no-install-recommends debhelper debmake equivs
-          sudo mk-build-deps --install \
+          sudo mk-build-deps --install --remove \
                              --tool='apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes' \
                              gpac/debian/control
 
@@ -54,17 +54,11 @@ jobs:
         shell: bash
         run: bash scripts/build.sh
 
-      - name: Get debian package name
-        shell: bash
-        run: |
-          echo "::set-output name=filename::$(basename $(find gpac/ -type f -name gpac\*.deb))"
-        id: get_deb_name
-
       - name: Upload result
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         with:
           name: ${{ matrix.codename }}
-          path: gpac/${{ steps.get_deb_name.outputs.filename }}
+          path: gpac/*.deb
 
   release:
     if: startsWith(github.ref, 'refs/tags/v')
@@ -95,11 +89,11 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: ${{ matrix.codename }}
-          path: artifact
-      - name: Get debian package name
+          path: ${{ matrix.codename }}
+      - name: Create a zip
         shell: bash
-        run: echo "::set-output name=filename::$(basename $(find artifact/ -type f -name \*.deb))"
-        id: get_deb_name
+        run: |
+        zip ${{ matrix.codename }}.zip -r ${{ matrix.codename }}
       - name: Upload release asset
         id: upload-release-asset
         uses: actions/upload-release-asset@v1.0.2
@@ -107,6 +101,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.release.outputs.upload_url }}
-          asset_path: artifact/${{ steps.get_deb_name.outputs.filename }}
-          asset_name: ${{ steps.get_deb_name.outputs.filename }}
-          asset_content_type: application/vnd.debian.binary-package
+          asset_path: ${{ matrix.codename }}.zip
+          asset_name: ${{ matrix.codename }}.zip
+          asset_content_type: application/zip
