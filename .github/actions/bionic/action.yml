@@ -8,6 +8,6 @@ outputs: []
 runs:
   using: 'docker'
   image: 'Dockerfile'
-  entrypoint: "/usr/bin/bash"
+  entrypoint: "bash"
   args:
     - "${{ inputs.script }}"
