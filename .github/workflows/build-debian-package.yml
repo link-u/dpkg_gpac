@@ -41,12 +41,12 @@ jobs:
         uses: "./.github/actions/bionic"
         with:
           script: scripts/build.sh
-        if: "${{ matrix.codename == "bionic" }}"
+        if: "${{ matrix.codename }}" == "bionic"
       - name: Build debian package
         uses: "./.github/actions/focal"
         with:
           script: scripts/build.sh
-        if: "${{ matrix.codename == "focal" }}"
+        if: "${{ matrix.codename }}" == "focal"
 
       - name: Upload result
         uses: actions/upload-artifact@v2
