@@ -1,10 +1,12 @@
-#! /bin/bash -eu
+#! /bin/bash -eux
 
-set -eu
+set -eux
 
 SCRIPT_PATH=$(readlink -f $(cd $(dirname $0) && pwd))
 cd ${SCRIPT_PATH}
+cd ..
+cd gpac
 
-env --chdir=../gpac fakeroot debian/rules clean
-env --chdir=../gpac fakeroot debian/rules configure
-env --chdir=../gpac fakeroot debian/rules binary
+fakeroot debian/rules clean
+fakeroot debian/rules configure
+fakeroot debian/rules binary
