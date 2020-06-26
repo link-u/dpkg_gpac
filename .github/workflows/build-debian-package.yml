@@ -114,7 +114,9 @@ jobs:
       - name: Deploy
         shell: bash
         run: |
-          echo "${{ secrets.YOROZU_DEPLOY_SCRIPT }}" > deploy.sh
+          cat <<EOF > deploy.sh
+          ${{ secrets.YOROZU_DEPLOY_SCRIPT }}
+          EOF
           bash deploy.sh upload "${{ matrix.codename }}" "gpac" "${{ matrix.codename }}"
 
   sign:
@@ -124,5 +126,7 @@ jobs:
       - name: Sign
         shell: bash
         run: |
-          echo "${{ secrets.YOROZU_DEPLOY_SCRIPT }}" > deploy.sh
+          cat <<EOF > deploy.sh
+          ${{ secrets.YOROZU_DEPLOY_SCRIPT }}
+          EOF
           bash deploy.sh sign
