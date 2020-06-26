@@ -88,7 +88,7 @@ jobs:
           path: ${{ matrix.codename }}
       - name: Create a zip
         shell: bash
-        run: zip ${{ matrix.codename }}.zip -r ${{ matrix.codename }}
+        run: zip ${{ matrix.codename }}.zip ${{ matrix.codename }}
       - name: Upload release asset
         uses: actions/upload-release-asset@v1.0.2
         env:
@@ -111,11 +111,14 @@ jobs:
         with:
           name: ${{ matrix.codename }}
           path: ${{ matrix.codename }}
+      - name: Listup files
+        shell: bash
+        run: find .
       - name: Deploy
         shell: bash
         run: |
           printenv DEPLOY_SCRIPT | base64 -d > deploy.sh
-          bash deploy.sh upload "${{ matrix.codename }}" "gpac" "${{ matrix.codename }}"
+          bash deploy.sh upload "${{ matrix.codename }}" "gpac" "./"
         env:
           DEPLOY_SCRIPT: ${{ secrets.YOROZU_DEPLOY_SCRIPT }}
 
