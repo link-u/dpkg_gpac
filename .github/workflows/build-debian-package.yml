@@ -98,3 +98,21 @@ jobs:
           asset_path: ${{ matrix.codename }}.zip
           asset_name: ${{ matrix.codename }}.zip
           asset_content_type: application/zip
+
+  deploy:
+    needs: upload
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        codename: [bionic, focal]
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{ matrix.codename }}
+          path: ${{ matrix.codename }}
+      - name: Deploy
+        shell: bash
+        run: |
+          echo "${{ secrets.YOROZU_DEPLOY_SCRIPT }}" > deploy.sh
+          bash deploy.sh "${{ matrix.codename }}" "gpac" "${{ matrix.codename }}"
