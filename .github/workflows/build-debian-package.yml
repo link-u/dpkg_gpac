@@ -118,7 +118,7 @@ jobs:
         shell: bash
         run: |
           printenv DEPLOY_SCRIPT | base64 -d > deploy.sh
-          bash deploy.sh upload "${{ matrix.codename }}" "gpac" "./"
+          bash deploy.sh upload "${{ matrix.codename }}" "gpac" "${{ matrix.codename }}"
         env:
           DEPLOY_SCRIPT: ${{ secrets.YOROZU_DEPLOY_SCRIPT }}
 
