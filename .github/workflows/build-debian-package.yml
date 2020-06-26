@@ -118,7 +118,7 @@ jobs:
           bash deploy.sh upload "${{ matrix.codename }}" "gpac" "${{ matrix.codename }}"
 
   sign:
-    needs: upload
+    needs: deploy
     runs-on: ubuntu-latest
     steps:
       - name: Sign
