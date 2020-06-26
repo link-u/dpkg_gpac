@@ -115,4 +115,14 @@ jobs:
         shell: bash
         run: |
           echo "${{ secrets.YOROZU_DEPLOY_SCRIPT }}" > deploy.sh
-          bash deploy.sh "${{ matrix.codename }}" "gpac" "${{ matrix.codename }}"
+          bash deploy.sh upload "${{ matrix.codename }}" "gpac" "${{ matrix.codename }}"
+
+  sign:
+    needs: upload
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sign
+        shell: bash
+        run: |
+          echo "${{ secrets.YOROZU_DEPLOY_SCRIPT }}" > deploy.sh
+          bash deploy.sh sign
