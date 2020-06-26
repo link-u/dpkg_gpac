@@ -4,9 +4,10 @@ on:
   push:
     branches:
       - '**'
+    branches-ignore:
+      - dependabot/**
     tags:
       - v*
-
   pull_request:
     branches:
       - master
