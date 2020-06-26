@@ -2,8 +2,6 @@ name: Build debian package on push or release-tags or pull request.
 
 on:
   push:
-    branches:
-      - '**'
     branches-ignore:
       - dependabot/**
     tags:
