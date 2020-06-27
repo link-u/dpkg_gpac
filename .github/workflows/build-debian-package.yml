@@ -1,4 +1,4 @@
-name: Build debian package on push or release-tags or pull request.
+name: Build debian packages
 
 on:
   push:
@@ -49,11 +49,11 @@ jobs:
         with:
           name: ${{ matrix.codename }}
           path: artifact
-      - name: Check debian package	
-        uses: link-u/execute-on-separated-ubuntu@master	
-        with:	
-          script: scripts/test.sh	
-          on: ${{ matrix.codename }}	
+      - name: Check debian package
+        uses: link-u/execute-on-separated-ubuntu@master
+        with:
+          script: scripts/test.sh
+          on: ${{ matrix.codename }}
 
   release:
     if: startsWith(github.ref, 'refs/tags/v')
