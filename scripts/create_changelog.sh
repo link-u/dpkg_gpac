@@ -2,7 +2,7 @@
 
 set -eu
 
-SCRIPT_PATH=$(readlink -f $(cd $(dirname $0) && pwd))
+SCRIPT_PATH=$(cd $(dirname $(readlink -f $0)) && pwd)
 cd ${SCRIPT_PATH}
 cd ..
 
